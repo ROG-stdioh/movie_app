@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_app/home_page.dart';
@@ -28,11 +30,21 @@ class _LoginPageState extends State<LoginPage> {
           'password': _passwordController.text,
         }),
       );
-      if (response.statusCode == 200) {
+
+      var loginData = jsonDecode(response.body.toString());
+
+      if (response.statusCode == 200 || loginData['token'] != null) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Signed in successfully!",
+            ),
           ),
         );
       } else {

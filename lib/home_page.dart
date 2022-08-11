@@ -13,24 +13,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Welcome"),
-              SizedBox(
-                height: 50,
-              ),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.exit_to_app, size: 18),
-                label: Text("Log Out"),
-              )
-            ],
+      backgroundColor: Colors.grey[200],
+
+      // app bar
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: Padding(
+          padding: const EdgeInsets.only(
+            top: 25.0,
+          ),
+          child: Text(
+            "PossiBuild!",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: Colors.grey[900],
+            ),
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 20.0,
+              top: 26.0,
+            ),
+            child: Icon(
+              Icons.logout_outlined,
+              color: Colors.grey[900],
+              size: 30,
+            ),
+          )
+        ],
       ),
+
+      // movie list
     );
   }
 }

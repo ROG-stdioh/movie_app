@@ -1,12 +1,10 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:movie_app/home_page.dart';
 
-import 'home_page.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -23,24 +21,25 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void register(
-      String fistName, String lastName, String email, String password) async {
-    try {
-      Response response = await post(
+  Future<void> login() async {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _firstNameController.text.isNotEmpty &&
+        _lastNameController.text.isNotEmpty) {
+      var response = await http.post(
         Uri.parse('https://api-telly-tell.herokuapp.com/api/client/signup'),
-        body: {
-          'firstName': fistName,
-          'lastName': lastName,
-          'email': email,
-          'password': password,
-        },
+        body: ({
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        }),
       );
-
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              "Account Created!",
+              "Account Created Successfully!",
             ),
           ),
         );
@@ -50,10 +49,31 @@ class _RegisterPageState extends State<RegisterPage> {
             builder: (context) => HomePage(),
           ),
         );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Technical Error! Please try again later.",
+            ),
+          ),
+        );
       }
-    } catch (e) {
-      print(e.toString());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Blank Field Not allowed!",
+          ),
+        ),
+      );
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -73,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: 25),
                 // Hello
                 Text(
-                  "Welcome New User!",
+                  "Welcome Back!",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 36,
@@ -110,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 10),
 
-                // lastName
+                // last name
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
@@ -181,12 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: GestureDetector(
                     onTap: () {
-                      register(
-                        _firstNameController.text.toString(),
-                        _lastNameController.text.toString(),
-                        _emailController.text.toString(),
-                        _passwordController.text.toString(),
-                      );
+                      login();
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -229,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         );
                       },
                       child: Text(
-                        'Log In',
+                        'Login Now',
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
